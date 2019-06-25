@@ -1,0 +1,20 @@
+{% load tz %}
+{% localtime on %}
+{% if userRequests.count > 0 %}
+    {% for delivery in userRequests %}
+        <tr class="context-menu-one {% if "Needs payment" in delivery.status %} needs-payment {% elif "Unpaid" in delivery.status  %} unpaid {% elif "Paid" in delivery.status %} paid {% endif %}"
+                id="{{ delivery.requestID }}"
+                amount="${{ delivery.amount|floatformat:2 }} {{ delivery.currency }}"
+                lat = "{{ delivery.lat }}"
+                lng = "{{ delivery.lng }}"
+                >
+            <td data-order="{{ delivery.amount|floatformat:2 }}">${{ delivery.amount|floatformat:2 }} {{ delivery.currency }}</td>
+            <td>{{delivery.street}}, {{delivery.area}}, {{delivery.country}}</td>
+            <td>{{ delivery.status }}</td>
+            <td>{{ delivery.phone }}</td>
+            <td><span style="display:none;">{{ delivery.dateCreated|date:"U" }}</span>{{ delivery.dateCreated }}</td>
+            <td class="row-distance">0</td>
+        </tr>
+    {% endfor %}
+{% endif %}
+{% endlocaltime %}

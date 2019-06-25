@@ -1,0 +1,1671 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+{% if user.is_authenticated %}
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<link rel="icon" href="">
+		<title>Xeemit | Money Delivered to You </title>
+
+		<link href="{% static 'css/bootstrap.css'%}" rel="stylesheet">
+		<link href="{% static 'css/bootstrap-social.css'%}" rel="stylesheet">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
+		<link rel="stylesheet" type="text/css" href="{% static 'css/component.css'%}" >
+		<link rel="stylesheet" type="text/css" href="{% static 'datatable/datatables.min.css'%}" >
+
+        <link href="{% static 'tel/css/intlTelInput.css' %}" rel="stylesheet">
+
+        <link href="{% static 'currencypicker/css/bootstrap-formhelpers.css' %}" rel="stylesheet">
+        <link href="{% static 'toast/ax5toast.css' %}" rel="stylesheet">
+        <link href="{% static 'contextMenu/jquery.contextMenu.min.css' %}" rel="stylesheet">
+
+		<link href="{% static 'css/homestyle.css'%}" rel="stylesheet">
+
+        <script>
+            var username = "{{ user.username }}";
+        </script>
+
+	</head>
+	<body id="page-top">
+
+		<div class="modal fade" id="sendMoneyForm" tabindex="-1" role="dialog" aria-labelledby="Modal-label-2">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="md-content">
+						<h3>Request Form</h3>
+						<div>
+							<form id="requestForm" class="send-money-form" action="/request" method="POST">
+								<div class="col-sm-12">
+
+									<div class="strike">
+										<span>
+											Pay Via
+										</span>
+									</div>
+
+                                    <ul class="nav nav-tabs">
+                                      <li class="active cardtab"><a data-toggle="tab" data-target="#card">Credit Card</a></li>
+                                      <li class="cashtab"><a data-toggle="tab" data-target="#cash">Cash</a></li>
+                                    </ul>
+
+                                    <div class="tab-content">
+                                        <div class="tab-pane active" id="card">
+
+                                        </div>
+                                        <div class="tab-pane col-md-6" id="cash">
+                                            <div class="form-group" style="margin-top: 5px;">
+                                                <label>Cash Pick-up Location</label>
+                                                <button id="mygetLocation" style="display:inline; float:right; padding: 2px 10px;" type="button" class="btn btn-lg btn-info pull-right">Get My Location</button>
+                                                <div id="mymap" style="height: 340px;"></div>
+                                                <input id="myArea" name="my_area" type="text" placeholder="Street Name, Area, Country" class="form-control" autocomplete="off" style="width: 100%;display: block;">
+                                                <input id="myStreetName" name="my_street" type="text" placeholder="Street Name" class="form-control" style="width: 45%;display: none;">
+                                                <input id="myCity" name="my_area" type="text" placeholder="City" class="form-control" style="width: 40%;display: none;">
+                                                <input id="myCountry" name="my_country" type="text" placeholder="Country" class="form-control" style="width: 13%;display: none;">
+                                                <input id="mylat" name="my_lat" type="number" class="form-control" style="width: 23%;display: none;">
+                                                <input id="mylng" name="my_lng" type="number" class="form-control" style="width: 23%;display: none;">
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-sm-12 form-group">
+                                                	<div class="col-md-4" style="padding-left: 0px;">
+                                                        <label>Amount</label>
+                                                        <input type="number" name="pickup_amount" placeholder="Enter Amount Here" class="form-control">
+                                                    </div>
+                                                    <div class="col-md-4" style="padding-left: 0px;">
+                                                        <label>Currency</label>
+                                                        <div name="pickup_currency" class="bfh-selectbox bfh-currencies" data-currency="" data-flags="true"></div>
+                                                    </div>
+                                                    <div class="col-md-4" style="padding-left: 0px;padding-right: 0px;">
+                                                        <label>Your Phone #</label>
+                                                        <input type="number" name="phone_number" placeholder="e.g. 1868XXXXXXX" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-sm-12 form-group">
+                                                	<div class="col-md-12" style="padding-left: 0px; padding-right: 0px;">
+                                                        <label>Your Email - Confirmation code for Payout Partner</label>
+                                                        <input type="email" name="pickup_email" placeholder="something@gmail.com" title="Confirmation code used by Payout Partner sent to this email address for transaction validation" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        {% csrf_token %}
+
+                                        <div class="col-sm-12 requestdetails">
+                                            <div class="form-group" style="margin-top: 5px;">
+                                                <label>Destination Location</label>
+                                                <button id="getLocation" style="display:inline; float:right; padding: 2px 10px;" type="button" class="btn btn-lg btn-info pull-right">Get My Location</button>
+                                                <div id="map" style="height: 340px;"></div>
+                                                <input id="Area" name="area" type="text" placeholder="Street Name, Area, Country" class="form-control" autocomplete="off" style="width: 100%;display: block;">
+                                                <input id="StreetName" name="street" type="text" placeholder="Street Name" class="form-control" style="width: 45%;display: none;">
+                                                <input id="City" name="area" type="text" placeholder="City" class="form-control" style="width: 40%;display: none;">
+                                                <input id="Country" name="country" type="text" placeholder="Country" class="form-control" style="width: 13%;display: none;">
+                                                <input id="lat" name="lat" type="number" class="form-control" style="width: 23%;display: none;">
+                                                <input id="lng" name="lng" type="number" class="form-control" style="width: 23%;display: none;">
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-12 form-group">
+                                                	<div class="col-md-4" style="padding-left: 0px;">
+                                                        <label>Amount</label>
+                                                        <input type="number" name="amount" placeholder="Enter Amount Here" class="form-control">
+                                                    </div>
+                                                    <div class="col-md-4" style="padding-left: 0px;">
+                                                        <label>Currency</label>
+                                                        <div name="currency" class="bfh-selectbox bfh-currencies" data-currency="" data-flags="true"></div>
+                                                    </div>
+                                                    <div class="col-md-4" style="padding-left: 0px;padding-right: 0px;">
+                                                        <label>Recipient Phone #</label>
+                                                        <input type="number" name="recip_phone_number" placeholder="e.g. 1868XXXXXXX" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-sm-12 form-group">
+                                                	<div class="col-md-12" style="padding-left: 0px; padding-right: 0px;">
+                                                        <label>Recipient Email</label>
+                                                        <input type="email" name="recip_email" title="Confirmation code used by Payout Partner sent to this email address for transaction validation" placeholder="something@gmail.com" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+	                                            <div class="col-md-6">
+	                                                <div id="requestCaptcha" class="g-recaptcha" data-size="normal" data-sitekey="6Lc39iITAAAAAM50LppiWEpdmwHqsHgxk0o4-Lzq"></div>
+	                                            </div>
+	                                            <div class="col-md-6">
+	                                                <button id="submitRequest" type="button" class="btn btn-lg btn-info pull-right validate-btn">Request</button>
+	                                                <button type="button" class="md-close btn btn-close pull-right close-register-btn" data-dismiss="modal">Close</button>
+	                                            </div>
+	                                        </div>
+                                        </div>
+                                    </div>
+
+
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+		<div class="modal fade" id="chatForm" tabindex="-1" role="dialog" aria-labelledby="Modal-label-3">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="md-content">
+						<h3>Messages</h3>
+						<div>
+							<form id="chatForm_form" class="chat-form" action="/chat" method="POST">
+								<div class="col-sm-12">
+
+									<div class="strike">
+										<span>
+											Messages From
+										</span>
+									</div>
+
+                                    <ul class="nav nav-tabs chat-tabs">
+                                      <li class="active cardtab"><a data-toggle="tab" data-target="#username1">John</a></li>
+                                      <li class="cashtab"><a data-toggle="tab" data-target="#username2">David</a></li>
+                                    </ul>
+
+                                    <div class="tab-content chat-content">
+                                        <div class="tab-pane active" id="username1">
+                                        	test1
+                                        	<div class="row">
+                                        		<div class="col-md-12">
+                                        			Messages
+                                        			<div style="height:480px;border: 1px solid black;"></div>
+                                        		</div>
+                                        	</div>
+                                        	
+                                        	<div class="row">
+                                        			<div class="col-md-9">
+                                        				<textarea class="form-control" placeholder="Message" style="resize:none;" maxlength="2000"></textarea>
+                                        			</div>
+                                        			<div class="col-md-3">
+                                        				<button type="button" class="chat_send btn btn-lg pull-right" userID="" requestID="">Send</button>
+                                        			</div>
+                                        	</div>
+                                        	
+                                        </div>
+                                        <div class="tab-pane" id="username2">
+                                            test2
+                                        </div>
+                                        {% csrf_token %}
+                                    </div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+        <div class="modal fade" id="PayoutPartnerRegistrationForm" tabindex="-1" role="dialog" aria-labelledby="Modal-label-1">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="md-content">
+						<h3>Payout Partner Registration Form</h3>
+						<div>
+							<form id="registrationForm" class="pp-registration-form" action="/request" method="POST">
+								<div class="col-sm-12">
+									<div class="strike">
+										<span>
+											Account Verification
+										</span>
+									</div>
+
+                                    <div class="row">
+                                    <p>Both your email <strong>and</strong> your phone number have to be validated.</p>
+                                    </div>
+
+									<div class="row">
+										<div class="col-sm-12 form-group">
+                                            <div class="col-md-6">
+											    <label>Email Verification</label>
+                                                <input type="email" class="form-control" id="emailaddress" style="width: 100%;">
+                                                <input type="button" class="form-control btn-info verify-btn email-verify" value="Send Email">
+											    <input type="text" id="emailcode" placeholder="Enter Code received here" class="form-control">
+                                            </div>
+                                            <div class="col-md-6">
+											    <label>Phone Verification</label>
+                                                <input type="tel" class="form-control" id="telephone" placeholder="" style="width: 100%;">
+                                                <input type="button" class="form-control btn-info verify-btn phone-verify" value="Send Text">
+											    <input type="text" id="phonecode" placeholder="Enter Code received here" class="form-control">
+                                            </div>
+										</div>
+									</div>
+
+                                    <div class="row" style="margin-top: 5px;">
+                                        <div class="strike">
+                                            <span>
+                                                Your Location
+                                            </span>
+                                        </div>
+                                        <label>Your Location - for assignment of cash pickups</label>
+                                        <button id="ppgetLocation" style="display:inline; float:right; padding: 2px 10px;" type="button" class="btn btn-lg btn-info pull-right">Get My Location</button>
+                                        <div id="ppmap" style="height: 240px;"></div>
+                                        <input id="ppArea" name="pp_area" type="text" placeholder="Street Name, Area, Country" class="form-control" autocomplete="off" style="width: 100%;display: block;">
+                                        <input id="ppStreetName" name="pp_street" type="text" placeholder="Street Name" class="form-control" style="width: 45%;display: none;">
+                                        <input id="ppCity" name="pp_area" type="text" placeholder="City" class="form-control" style="width: 40%;display: none;">
+                                        <input id="ppCountry" name="pp_country" type="text" placeholder="Country" class="form-control" style="width: 13%;display: none;">
+                                        <input id="pplat" name="pp_lat" type="number" class="form-control" style="width: 23%;display: none;">
+                                        <input id="pplng" name="pp_lng" type="number" class="form-control" style="width: 23%;display: none;">
+                                    </div>
+								</div>
+
+                                <div class="strike">
+										<span>
+											Bank Account Details
+										</span>
+									</div>
+
+                                    <div class="row">
+                                    <p>We need some info on your bank account details in order for you to receive payments.</p>
+                                    </div>
+
+                                    <input id="bank_account_number" name="bank_account_number" type="text" placeholder="######" class="form-control" autocomplete="off" style="width: 100%;display: block;"><br/>
+
+                                    {% csrf_token %}
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div id="registrationCaptcha" class="g-recaptcha" data-size="normal" data-sitekey="6Lc39iITAAAAAM50LppiWEpdmwHqsHgxk0o4-Lzq"></div>
+                                        </div>
+                                        <div class="col-md-6" style="#padding-right:0px;">
+                                            <button id="submitRequest" type="button" class="btn btn-lg btn-info pull-right validate-btn pp-register-btn">Register</button>
+                                            <button class="md-close btn btn-close pull-right close-register-btn" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+
+							</form>
+						</div>
+					</div>
+				</div>
+
+
+
+
+			</div>
+		</div>
+
+        <div class="modal fade" id="deliveryForm" tabindex="-1" role="dialog" aria-labelledby="Modal-label-4">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="md-content">
+						<h3>Delivery Form</h3>
+						<div>
+							<form id="delivery_Form" class="delivery-form" action="/delivery/" method="POST">
+								<div class="col-sm-12">
+
+                                    <input id="requestID" name="requestID" type="text" placeholder="" class="form-control" style="width: 40%;display: none;">
+
+                                    <div class="col-sm-12 form-group">
+                                        <div class="row">
+                                            <div class="col-md-12" style="">
+                                                <label>Validation Code</label>
+                                                <input type="text" name="code" placeholder="Enter Code Here" class="form-control">
+                                            </div>
+                                        </div>
+
+                                        <br/>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div id="validationCodeCaptcha" class="g-recaptcha" data-size="normal" data-sitekey="6Lc39iITAAAAAM50LppiWEpdmwHqsHgxk0o4-Lzq"></div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <button id="submitCode" type="button" class="btn btn-lg btn-info pull-right validate-code-btn">Validate</button>
+                                                <button type="button" class="md-close btn btn-close pull-right close-register-btn" data-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+
+                                    {% csrf_token %}
+
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+		<!-- Navigation -->
+		<div id="wrapper">
+			<nav class="navbar navbar-default">
+				<div class="container">
+					<!-- Brand and toggle get grouped for better mobile display -->
+					<div class="navbar-header page-scroll">
+						<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						</button>
+						<a class="navbar-brand page-scroll" href="/"><img src="{% static 'images/Xeemit.png'%}" alt="Xeemit logo"></a>
+					</div>
+					<!-- Collect the nav links, forms, and other content for toggling -->
+					<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+						<ul class="nav navbar-nav navbar-right">
+							<li class="hidden">
+								<a href="#page-top"></a>
+							</li>
+
+
+							<li class="myAccount-btn" style="opacity:0;">
+								<a href="#myaccount">My Account</a>
+
+							</li>
+
+							<li>
+								<a href="/logout" style="padding-right: 0px;margin-right: 0px;">Sign Out</a>
+							</li>
+						</ul>
+						<ul class="nav navbar-nav">
+							<li>
+								<a href="#sendrequests">Send Money</a>
+							</li>
+							<li>
+								<a href="#deliveries">Deliver Money</a>
+							</li>
+
+                            {% if isPayoutPartner %}
+							<li>
+								<a href="#requests">Open Requests</a>
+							</li>
+                            <li>
+                                <a href="#pickups">Cash Pickups</a>
+                            </li>
+                            {% endif %}
+
+						</ul>
+					</div>
+					<!-- /.navbar-collapse -->
+				</div>
+				<!-- /.container-fluid -->
+			</nav>
+            {% if isPayoutPartner %}
+			<section id="requests">
+				<div class="container">
+
+					<div class="row">
+						<div class="information">
+							<div class="col-md-6">
+								<h1>Open Requests</h1>
+							</div>
+
+							<div class="col-md-6">
+								<div class="button-wrapper">
+									<button class="view-map ninja-button icon-alone">
+										<span aria-hidden="true"></span>
+										<span>View Map</span>
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<table class="open-requests-table table table-bordered table-hover dataTable" width="100%" data-table="true" id="DataTables_Table_1" role="grid" aria-describedby="DataTables_Table_1_info" style="width: 100%;">
+						<thead>
+							<tr role="row">
+								<th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_1" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Amount: activate to sort column descending" style="width: 142px;">Amount</th>
+								<th class="sorting" tabindex="0" aria-controls="DataTables_Table_1" rowspan="1" colspan="1" aria-label="Location: activate to sort column ascending" style="width: 191px;">Deliver to</th>
+								<th class="sorting" tabindex="0" aria-controls="DataTables_Table_1" rowspan="1" colspan="1" aria-label="Status: activate to sort column ascending" style="width: 102px;">Status</th>
+								<th class="sorting" tabindex="0" aria-controls="DataTables_Table_1" rowspan="1" colspan="1" aria-label="Created On: activate to sort column ascending" style="width: 102px;">Created On</th>
+                                <th class="sorting" tabindex="0" aria-controls="DataTables_Table_1" rowspan="1" colspan="1" aria-label="Nearest: activate to sort column ascending" style="width: 52px;">Nearest (km)</th>
+							</tr>
+						</thead>
+
+						<tbody>
+						</tbody>
+
+					</table>
+				</div><!-- container -->
+			</section>
+			{% endif %}
+			<section id="sendrequests" class="mz-module">
+				<div class="container">
+
+					<div class="row">
+						<div class="information">
+							<div class="col-md-6">
+								<h1>Your Requests</h1>
+							</div>
+						</div>
+
+						<div class="col-md-6">
+							
+							<div class="button-wrapper">
+								<button class="request-create ninja-button icon-alone">
+									<span aria-hidden="true"></span>
+									<span>New Request +</span>
+								</button>
+							</div>
+
+
+							<div style="padding:5px;float:right;"></div>
+
+							<div class="button-wrapper">
+								<button class="view-map ninja-button icon-alone">
+									<span aria-hidden="true"></span>
+									<span>View Map</span>
+								</button>
+							</div>
+
+						</div>
+					</div>
+
+					
+
+					<table class="your-requests-table table table-bordered table-hover dataTable" width="100%" data-table="true" id="DataTables_Table_2" role="grid" aria-describedby="DataTables_Table_2_info" style="width: 100%;">
+						<thead>
+							<tr role="row">
+								<th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_2" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Amount: activate to sort column descending" style="width: 142px;">Amount</th>
+								<th class="sorting" tabindex="0" aria-controls="DataTables_Table_2" rowspan="1" colspan="1" aria-label="Location: activate to sort column ascending" style="width: 191px;">Location</th>
+								<th class="sorting" tabindex="0" aria-controls="DataTables_Table_2" rowspan="1" colspan="1" aria-label="Status: activate to sort column ascending" style="width: 102px;">Status</th>
+								<th class="sorting" tabindex="0" aria-controls="DataTables_Table_2" rowspan="1" colspan="1" aria-label="Created On: activate to sort column ascending" style="width: 102px;">Created On</th>
+                                <th class="sorting" tabindex="0" aria-controls="DataTables_Table_1" rowspan="1" colspan="1" aria-label="Nearest: activate to sort column ascending" style="width: 52px;">Nearest (km)</th>
+							</tr>
+						</thead>
+
+						<tbody>
+
+						</tbody>
+						<!-- Include footer with data-search attribute to auto include searching. supports type text and option only. -->
+						<tfoot style="display: none;">
+						</tfoot>
+					</table>
+				</div><!-- container -->
+			</section>
+
+			<section id="deliveries" class="mz-module">
+				<div class="container">
+                    {% if isPayoutPartner %}
+					<div class="row">
+						<div class="information">
+							<div class="col-md-6">
+								<h1>Deliveries to Make</h1>
+							</div>
+
+							<div class="col-md-6">
+								<div class="button-wrapper">
+									<button class="view-map ninja-button icon-alone">
+										<span aria-hidden="true"></span>
+										<span>View Map</span>
+									</button>
+								</div>
+							</div>
+						</div>
+
+						<!-- <div class="col-md-4">
+							<div class="button-wrapper">
+								<button class="cabinet-create ninja-button icon-alone">
+									<span aria-hidden="true"></span>
+									<span>New Request +</span>
+								</button>
+							</div>
+						</div> -->
+					</div>
+
+
+					<table class="deliveries-table table table-bordered table-hover dataTable" width="100%" data-table="true" id="DataTables_Table_3" role="grid" aria-describedby="DataTables_Table_3_info" style="width: 100%;">
+						<thead>
+							<tr role="row">
+								<th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_3" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Amount: activate to sort column descending" >Amount</th>
+								<th class="sorting" tabindex="0" aria-controls="DataTables_Table_3" rowspan="1" colspan="1" aria-label="Location: activate to sort column ascending" >Location</th>
+								<th class="sorting" tabindex="0" aria-controls="DataTables_Table_3" rowspan="1" colspan="1" aria-label="Status: activate to sort column ascending" >Status</th>
+                                <th class="sorting" tabindex="0" aria-controls="DataTables_Table_4" rowspan="1" colspan="1" aria-label="Phone Number: activate to sort column ascending" >Phone Number</th>
+								<th class="sorting" tabindex="0" aria-controls="DataTables_Table_3" rowspan="1" colspan="1" aria-label="Created On: activate to sort column ascending" >Created On</th>
+                                <th class="sorting" tabindex="0" aria-controls="DataTables_Table_1" rowspan="1" colspan="1" aria-label="Nearest: activate to sort column ascending" >Nearest (km)</th>
+							</tr>
+						</thead>
+
+						<tbody>
+
+						</tbody>
+						<!-- Include footer with data-search attribute to auto include searching. supports type text and option only. -->
+						<tfoot style="display: none;">
+						</tfoot>
+					</table>
+
+                    {% else %}
+
+                    {% endif %}
+				</div><!-- container -->
+
+			</section>
+
+            {% if isPayoutPartner %}
+            <section id="pickups">
+                <div class="container">
+
+                    <div class="row">
+                        <div class="information">
+                            <div class="col-md-6">
+                                <h1>Assigned Cash Pickups</h1>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="button-wrapper">
+                                    <button class="view-map ninja-button icon-alone">
+                                        <span aria-hidden="true"></span>
+                                        <span>View Map</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <table class="pickups-table table table-bordered table-hover dataTable" width="100%" data-table="true" id="DataTables_Table_4" role="grid" aria-describedby="DataTables_Table_4_info" style="width: 100%;">
+                        <thead>
+                            <tr role="row">
+                                <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_4" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Amount: activate to sort column descending" style="width: 142px;">Amount</th>
+                                <th class="sorting" tabindex="0" aria-controls="DataTables_Table_4" rowspan="1" colspan="1" aria-label="Pickup Location: activate to sort column ascending" style="width: 191px;">Pickup Location</th>
+                                <th class="sorting" tabindex="0" aria-controls="DataTables_Table_4" rowspan="1" colspan="1" aria-label="Status: activate to sort column ascending" style="width: 191px;">Status</th>
+                                <th class="sorting" tabindex="0" aria-controls="DataTables_Table_4" rowspan="1" colspan="1" aria-label="Phone Number: activate to sort column ascending" style="width: 102px;">Phone Number</th>
+                                <th class="sorting" tabindex="0" aria-controls="DataTables_Table_4" rowspan="1" colspan="1" aria-label="Date Created: activate to sort column ascending" style="width: 102px;">Created On</th>
+                                <th class="sorting" tabindex="0" aria-controls="DataTables_Table_1" rowspan="1" colspan="1" aria-label="Nearest: activate to sort column ascending" style="width: 52px;">Nearest (km)</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                        </tbody>
+
+                    </table>
+                </div><!-- container -->
+            </section>
+            
+            {% endif %}
+
+            <section id="mapview">
+                <div class="container">
+
+                    <div class="row" id="mapview_header">
+                        <div class="information">
+                            <div class="col-md-6">
+                                <h1>Map View</h1>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="button-wrapper">
+                                    <button class="view-table ninja-button icon-alone">
+                                        <span aria-hidden="true"></span>
+                                        <span>View Table</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- map -->
+                    <div id="table_map" class="col-md-12" style="height: 400px;"></div>
+
+                </div><!-- container -->
+            </section>
+			
+
+			<p id="back-top">
+				<a href="#top"><i class="fa fa-angle-up"></i></a>
+			</p>
+
+			<div class="push"></div>
+		</div>
+
+
+		<!-- Bootstrap core JavaScript
+			================================================== -->
+		<!-- Placed at the end of the document so the pages load faster -->
+		<script src="{% static 'js/jquery-2.2.4.min.js'%}"></script>
+		<script src="{% static 'js/bootstrap.min.js'%}"></script>
+		<script src="{% static 'toast/ax5core.min.js'%}"></script>
+		<script src="{% static 'toast/ax5toast.min.js'%}"></script>
+
+		<script src="{% static 'js/modernizr.custom.js'%}"></script>
+		<script src="{% static 'js/SmoothScroll.js'%}"></script>
+		<script src="{% static 'js/theme-scripts.js'%}"></script>
+		<script src="{% static 'js/classie.js'%}"></script>
+		<script src="{% static 'js/modalEffects.js'%}"></script>
+		<script src="{% static 'datatable/datatables.js'%}"></script>
+		<script src="{% static 'datatable/init.js'%}"></script>
+        <script src="{% static 'tel/js/intlTelInput.js' %}"></script>
+		<script type="text/javascript" src='https://maps.google.com/maps/api/js?libraries=places&key=AIzaSyBhC61eIaExSAaSGuBg3yYYHn5vyeDtkCU'></script>
+		<script src="{% static 'js/locationpicker.jquery.js' %}"></script>
+        <script src="{% static 'js/gmaps.js' %}"></script>
+		<script src="{% static 'currencypicker/js/bootstrap-formhelpers.js' %}"></script>
+
+        <script src="{% static 'js/sockjs.min.js' %}"></script>
+
+		<script src="{% static 'contextMenu/jquery.ui.position.js'%}"></script>
+		<script src="{% static 'contextMenu/jquery.contextMenu.js'%}"></script>
+
+
+        <script>
+            var capt_code;
+            var capt_req;
+            var capt_reg;
+
+            var CaptchaCallback = function() {
+                capt_code = grecaptcha.render('validationCodeCaptcha', {'sitekey' : '6Lc39iITAAAAAM50LppiWEpdmwHqsHgxk0o4-Lzq'});
+                capt_reg = grecaptcha.render('registrationCaptcha', {'sitekey' : '6Lc39iITAAAAAM50LppiWEpdmwHqsHgxk0o4-Lzq'});
+                capt_req = grecaptcha.render('requestCaptcha', {'sitekey' : '6Lc39iITAAAAAM50LppiWEpdmwHqsHgxk0o4-Lzq'});
+            };
+        </script>
+        <script src="https://www.google.com/recaptcha/api.js?onload=CaptchaCallback&render=explicit" async defer></script>
+
+        <!-- ------------------------- Location Picker Stuff ------------------------------------------ -->
+		<script>
+
+			function updateControls(addressComponents) {
+				$('#StreetName').val(addressComponents.addressLine1).change();
+				$('#City').val(addressComponents.stateOrProvince).change();
+				$('#Country').val(addressComponents.country).change();
+                $('#Area').val($('#StreetName').val()+', '+ $('#City').val() +', '+ $('#Country').val());
+			}
+			$('#map').locationpicker({
+				location: {latitude: 10.6505117, longitude: -61.4013294},
+				radius: 140,
+                inputBinding: {
+                    latitudeInput: $('#lat'),
+                    longitudeInput: $('#lng'),
+                    locationNameInput: $('#Area'),
+                },
+                enableAutocomplete: true,
+				onchanged: function (currentLocation, radius, isMarkerDropped) {
+					var addressComponents = $(this).locationpicker('map').location.addressComponents;
+					updateControls(addressComponents);
+				},
+				oninitialized: function(component) {
+					var addressComponents = $(component).locationpicker('map').location.addressComponents;
+					updateControls(addressComponents);
+				},
+			});
+
+			$('.modal').on('shown.bs.modal', function () {
+				$('#map').locationpicker('autosize');
+                $('#mymap').locationpicker('autosize');
+                $('#ppmap').locationpicker('autosize');
+			});
+
+			$('#getLocation').click(function() {
+				function gotoPosition(position) {
+                    $('#lat').val(position.coords.latitude).change();
+                    $('#lng').val(position.coords.longitude).change();
+                    $('#map').locationpicker("location", {latitude: position.coords.latitude, longitude: position.coords.longitude});
+
+				}
+
+				if (navigator.geolocation) {
+					navigator.geolocation.getCurrentPosition(gotoPosition);
+				}
+				else {
+					console.log("Could not obtain your location.");
+				}
+			});
+
+
+            //------------------------------------------------------------------------------------------------------------
+
+            function myupdateControls(addressComponents) {
+				$('#myStreetName').val(addressComponents.addressLine1).change();
+				$('#myCity').val(addressComponents.stateOrProvince).change();
+				$('#myCountry').val(addressComponents.country).change();
+                $('#myArea').val($('#myStreetName').val()+', '+ $('#myCity').val() +', '+ $('#myCountry').val());
+			}
+			$('#mymap').locationpicker({
+				location: {latitude: 10.6505117, longitude: -61.4013294},
+				radius: 140,
+                inputBinding: {
+                    latitudeInput: $('#mylat'),
+                    longitudeInput: $('#mylng'),
+                    locationNameInput: $('#myArea'),
+                },
+                enableAutocomplete: true,
+				onchanged: function (currentLocation, radius, isMarkerDropped) {
+					var addressComponents = $(this).locationpicker('map').location.addressComponents;
+					myupdateControls(addressComponents);
+				},
+				oninitialized: function(component) {
+					var addressComponents = $(component).locationpicker('map').location.addressComponents;
+					myupdateControls(addressComponents);
+				},
+			});
+
+            $('#mygetLocation').click(function() {
+				function gotoPosition(position) {
+                    $('#mylat').val(position.coords.latitude).change();
+                    $('#mylng').val(position.coords.longitude).change();
+                    $('#mymap').locationpicker("location", {latitude: position.coords.latitude, longitude: position.coords.longitude});
+
+				}
+
+				if (navigator.geolocation) {
+					navigator.geolocation.getCurrentPosition(gotoPosition);
+				}
+				else {
+					console.log("Could not obtain your location.");
+				}
+			});
+
+            //------------------------------------------------------------------------------------------------------------
+
+            function ppupdateControls(addressComponents) {
+				$('#ppStreetName').val(addressComponents.addressLine1);
+				$('#ppCity').val(addressComponents.stateOrProvince);
+				$('#ppCountry').val(addressComponents.country);
+                $('#ppArea').val($('#ppStreetName').val()+', '+ $('#ppCity').val() +', '+ $('#ppCountry').val());
+			}
+			$('#ppmap').locationpicker({
+				location: {latitude: 10.6505117, longitude: -61.4013294},
+				radius: 140,
+                inputBinding: {
+                    latitudeInput: $('#pplat'),
+                    longitudeInput: $('#pplng'),
+                    locationNameInput: $('#ppArea'),
+                },
+                enableAutocomplete: true,
+				onchanged: function (currentLocation, radius, isMarkerDropped) {
+					var addressComponents = $(this).locationpicker('map').location.addressComponents;
+                    console.log(currentLocation, radius, isMarkerDropped);
+					ppupdateControls(addressComponents);
+				},
+				oninitialized: function(component) {
+					var addressComponents = $(component).locationpicker('map').location.addressComponents;
+					ppupdateControls(addressComponents);
+				},
+			});
+
+            $('#ppgetLocation').click(function() {
+				function gotoPosition(position) {
+                    $('#pplat').val(position.coords.latitude).change();
+                    $('#pplng').val(position.coords.longitude).change();
+                    $('#ppmap').locationpicker("location", {latitude: position.coords.latitude, longitude: position.coords.longitude});
+
+
+				}
+
+				if (navigator.geolocation) {
+					navigator.geolocation.getCurrentPosition(gotoPosition);
+				}
+				else {
+					console.log("Could not obtain your location.");
+				}
+			});
+
+		</script>
+        <!-- ------------------------------------------------------------------------------------------ -->
+
+        <!--------------------------- GMaps Stuff -------------------------------------------->
+        <script>
+            var table_map = new GMaps({
+                div: '#table_map',
+                lat: 10.043333,
+                lng: -71.028333,
+                height:'700px',
+                width:'100%',
+                zoom: 12
+            });
+
+            table_map.addControl({
+                position: 'top_right',
+                content: 'Get Current Location',
+                style: {
+                    margin: '5px 20px 0px 5px',
+                    padding: '5px 5px',
+                    border: 'solid 1px #717B87',
+                    background: '#fff'
+                },
+                events: {
+                    click: function(){
+                        if (navigator.geolocation) {
+                            navigator.geolocation.getCurrentPosition(function(position) {
+                            var pos = {
+                                lat: position.coords.latitude,
+                                lng: position.coords.longitude
+                            };
+
+                            table_map.setCenter(pos);
+                            }, function() {
+
+                            });
+                        }
+                        else {
+
+                        }
+                    }
+                }
+            });
+
+            var setUserPos = true;
+
+            var original_section;
+            $('.view-map').click(function(){
+                table_map.removeMarkers();
+
+                function initGeolocation(){
+                    if( navigator.geolocation ){
+                        navigator.geolocation.getCurrentPosition( geo_success, geo_fail );
+                    }
+                    else {
+                        alert("Your browser does not appear to support geolocation services.");
+                    }
+                }
+                function geo_success(position) {
+                    if (setUserPos){
+                        table_map.setCenter(position.coords.latitude,position.coords.longitude);
+                    }
+                    setUserPos = true;
+                }
+
+                function geo_fail() {
+                    // Could not obtain location
+                }
+                initGeolocation();
+
+                $('#mapview_header').empty();
+                $(this).parents('.row').children().clone(true).appendTo('#mapview_header');
+
+                $('#mapview_header .view-map').addClass('view-table').removeClass('view-map').off();
+                $('#mapview_header .view-table').children().eq(1)[0].innerText='View Table';
+
+                var parent_section = $(this).parents('section').attr('id');
+                $('#'+parent_section).css("display","none");
+                $('#mapview').fadeIn("slow");
+                table_map.refresh();
+                original_section = parent_section;
+
+                //var points = new Object();
+                var rows = $(this).closest('.row').next().find('tr');
+                console.log(rows.length);
+                console.log(rows);
+
+                if (rows.length > 1 && rows["1"].cells["0"].className!="dataTables_empty") {
+                    rows.splice(0, 1);
+                    rows.each(function(i){
+                        var row = rows.eq(i);
+
+                        var buttonChooseRequest = '';
+                        if (original_section == 'requests'){
+                            buttonChooseRequest = '<button class="map-choose-request" row_num='+i+' row_id='+row.attr('id')+'>Choose this Request</button>'
+                        }
+                        console.log(row);
+                        table_map.addMarker({
+                            lat: row.attr('lat'),
+                            lng: row.attr('lng'),
+                            title: row.attr('amount'),
+                            //label: row.attr('amount'),
+                            click: function(e) {
+                                //alert('You clicked in this marker');
+                            },
+                            infoWindow: {
+                                content: '<p>Amount: '+row.attr('amount')+' </p>'+buttonChooseRequest
+                            }
+                        });
+                    });
+                }
+                
+                console.log(rows);
+
+                $('#mapview').on('click', '.view-table', function(){
+                    console.log('test');
+                    $('#mapview').css("display","none");
+                    $('#'+original_section).fadeIn("slow");
+                });
+                //$('#mapview_header .view-map').addClass('view-table').on();
+
+                
+
+            });
+
+            $('#table_map').on('click', '.map-choose-request', function(){
+                console.log('here');
+                var row_num = parseInt($(this).attr('row_num'));
+                var row_id = $(this).attr('row_id');
+                $.ajax({
+                    type: "POST",
+                    url: "/request",
+                    data: {
+                        csrfmiddlewaretoken: '{{ csrf_token }}',
+                        requestID : $(this).attr('row_id'),
+                        REQUEST : "REQUEST"
+                    },
+                    dataType: "text",
+                    success: function (data) {
+                        $('.open-requests-table').find('*[id="'+row_id+'"]').empty();
+                        successToast.push('Request successfully chosen.');
+                        table_map.markers[row_num].setMap(null);
+                        table_map.markers[row_num]=null;
+                    },
+                    error: function (data) {
+                        console.log('Error');
+                        console.log(data);
+                        failToast.push('Request failed!')
+                    }
+                });
+            });
+
+
+        </script>
+        <!-- -------------------------------------------------------------------------------- -->
+
+		<script src="{% static 'js/router.js'%}"></script>
+		<script src="{% static 'js/main.js'%}"></script>
+
+
+		<script>
+			console.log(location.href);
+			{% if isPayoutPartner %} {# controls home page redirection for user depending on whether they are payout partner or not #}
+				if (location.href.indexOf('#')<1 || location.href.slice(-1) == '#') location.href="#requests";
+			{% else %}
+				if (location.href.indexOf('#')<1 || location.href.slice(-1) == '#') location.href="#sendrequests";
+                $("#telephone").intlTelInput();
+
+                $('.phone-verify').click(function(){
+                    if( $("#telephone").intlTelInput("isValidNumber") ) {
+                        var phoneNumber = $("#telephone").intlTelInput("getNumber");
+                        $.ajax({
+                            type: "POST",
+                            url: "/phone-validation/",
+                            data: {
+                              csrfmiddlewaretoken: '{{ csrf_token }}',
+                              phoneNumber: phoneNumber
+                            },
+                            success: function(data) {
+                                console.log('Ok');
+                            },
+                            error: function(xhr, textStatus, errorThrown) {
+                                console.log('Error');
+                            }
+                        });
+                        $(this).prop('disabled', true);
+                    }
+                    else {
+                        console.log("Invalid Number!");
+                    }
+                });
+
+                $('.email-verify').click(function(){
+                    if( $("#emailaddress").val()!="" ) {
+                        console.log($("#emailaddress").val());
+                        $.ajax({
+                            type: "POST",
+                            url: "/email-validation/",
+                            data: {
+                              csrfmiddlewaretoken: '{{ csrf_token }}',
+                              email: $("#emailaddress").val()
+                            },
+                            success: function(data) {
+                                console.log('Ok');
+                            },
+                            error: function(xhr, textStatus, errorThrown) {
+                                console.log('Error');
+                            }
+                        });
+                        //$(this).prop('disabled', true);
+                    }
+                    else {
+                        console.log("Invalid Email!");
+                    }
+                });
+
+                $('.pp-register-btn').click(function(){
+                    if( $("#emailcode").val()!="" && $("#phonecode").val()!="" ) {
+                        console.log($("#ppStreetName").val());
+                        $.ajax({
+                            type: "POST",
+                            url: "/partner-registration/",
+                            dataType: "text",
+                            data: {
+                                csrfmiddlewaretoken: '{{ csrf_token }}',
+                                emailcode: $("#emailcode").val(),
+                                phonecode: $("#phonecode").val(),
+                                bank_account: $("#bank_account_number").val(),
+                                lat: $("#pplat").val(),
+                                lng: $("#pplng").val(),
+                                country: $("#ppCountry").val(),
+                                area: $("#ppCity").val(),
+                                street: $("#ppStreetName").val(),
+                            },
+                            success: function(data) {
+                                console.log('Ok');
+                                if(data=="Ok") window.location="/";
+                            },
+                            error: function(xhr, textStatus, errorThrown) {
+                                console.log('Error');
+                            }
+                        });
+                        //$(this).prop('disabled', true);
+                    }
+                    else {
+                        console.log("Invalid Email!");
+                    }
+                });
+
+
+                $('a[href="#deliveries"]').click(function(){
+                    $('#PayoutPartnerRegistrationForm').modal('show');
+                });
+			{% endif %}
+		</script>
+
+        <script>
+
+            //<!-- ------------------------- Chat Server Setup ------------------------------------------ -->
+            var sock = new SockJS('{{ serverAddress }}:1025');
+            sock.onopen = function() {
+                console.log('Socket Opened');
+
+            };
+            sock.onmessage = function(e) {
+                console.log('Server Message: ', e.data);
+                    var response = JSON.parse(e.data);
+                console.log(response);
+                if (response["fromUser"] == username) {
+                    response["fromUser"] = "You";
+                    $('.'+response["toUser"]+'-msgs').append('<div class="theirmsg pull-right">'+response["fromUser"]+": "+response["msg"]+'</div><br/>');
+                }
+                $('.'+response["fromUser"]+'-msgs').append('<div class="theirmsg pull-left">'+response["fromUser"]+": "+response["msg"]+'</div><br/>');
+
+                if (!response["success"]) {
+                    $('.msgs').animate({scrollTop: $('.msgs').get(0).scrollHeight}, 1000);
+                }
+
+            };
+            sock.onclose = function() {
+                console.log('Socket Closed');
+            };
+            //<!-- ------------------------------------------------------------------- -->
+
+
+            $('#submitRequest').click(function(){
+                if(grecaptcha.getResponse(capt_req) != "") {
+                    var datastring = $("#requestForm").serializeArray();
+                    datastring.push({name:"ADD", value:"ADD"});
+                    datastring.push({name:"currency", value:$('div[name="currency"]').val()});
+                    if ($('input[name="pickup_amount]').val()) datastring.push({name:"pickup_currency", value:$('div[name="pickup_currency"]').val()});
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/request",
+                        data: $.param(datastring),
+                        dataType: "text",
+                        success: function (data) {
+                            $('#sendMoneyForm').modal('hide');
+                            $('.modal-backdrop').remove();
+                            var newRow = data;
+                            $('.your-requests-table').DataTable().row.add($(newRow)).draw();
+                            $('#requestForm').find('.form-control').val('');
+                            grecaptcha.reset();
+                            successToast.push('Request successfully submitted.');
+                        },
+                        error: function (data) {
+                            console.log('Error');
+                            console.log(data);
+                        }
+                    });
+                }
+                else {
+                    console.log('Captcha not solved.');
+                }
+            });
+
+            $('#submitCode').click(function(){
+                if(grecaptcha.getResponse(capt_code) != "") {
+                    var datastring = $("#delivery_Form").serializeArray();
+                    $.ajax({
+                        type: "POST",
+                        url: "/delivery/",
+                        data: $.param(datastring),
+                        dataType: "text",
+                        success: function (data) {
+                            $('#deliveryForm').modal('hide');
+                            $('.modal-backdrop').remove();
+                            var newRow = data;
+                            $('#requestForm').find('.form-control').val('');
+                            grecaptcha.reset();
+                            successToast.push('Code successfully submitted.');
+                        },
+                        error: function (data) {
+                            console.log('Error');
+                            console.log(data);
+                        }
+                    });
+                }
+                else {
+                    console.log('Captcha not solved.');
+                }
+            });
+
+            $('.request-create').click(function(){
+                $('#sendMoneyForm').modal('show');
+            });
+
+            var userGreetingToast = new ax5.ui.toast({
+			    icon: '<i class="fa fa-user"></i>',
+			    containerPosition: "top-right"
+			});
+			userGreetingToast.push('Welcome {{ user.first_name }} {{ user.last_name }}');
+
+			var successToast = new ax5.ui.toast({
+			    icon: '<i class="fa fa-check"></i>',
+			    containerPosition: "top-right",
+			    theme:"success",
+			});
+
+			var failToast = new ax5.ui.toast({
+			    icon: '<i class="fa fa-times"></i>',
+			    containerPosition: "top-right",
+			    theme:"danger",
+			});
+
+			$(function(){
+			    $.contextMenu({
+			        selector: '.open-requests-table > tbody > .context-menu-one', 
+			        trigger: 'left',
+			        callback: function(key, options) {
+			            var m = "clicked: " + key;
+                        switch (key){
+                            case "request":
+                                var thisrow = $(this);
+                                var rowid = parseInt($(this)[0].id);
+                                console.log(rowid);
+                                $.ajax({
+                                    type: "POST",
+                                    url: "/request",
+                                    data: {
+                                        csrfmiddlewaretoken: '{{ csrf_token }}',
+                                        requestID : rowid,
+                                        REQUEST : "REQUEST"
+                                    },
+                                    dataType: "text",
+                                    success: function (data) {
+                                        thisrow.empty();
+                                        successToast.push('Request successfully chosen.');
+                                    },
+                                    error: function (data) {
+                                        console.log('Error');
+                                        console.log(data);
+                                        failToast.push('Request failed!')
+                                    }
+                                });
+                                break;
+
+                            case "map":
+                                setUserPos = false;
+                                $(this).parents('section').find('.view-map').click();
+                                var pos = {
+                                    lat: parseFloat($(this).attr('lat')),
+                                    lng: parseFloat($(this).attr('lng'))
+                                };
+
+                                table_map.setCenter(pos);
+                                table_map.setZoom(15);
+                                var row_num = $(this).index();
+                                google.maps.event.trigger(table_map.markers[row_num], 'click');
+                                break;
+                        }
+
+			            console.log(m);
+			        },
+			        items: {
+			            "request": {name: "Choose Request", icon: "fa-hand-paper-o"},
+                        "message": {name: "Send Message to Requester", icon: "fa-comments-o"},
+                        "map": {name: "View on Map", icon: "fa-map-marker"},
+			            "sep1": "---------",
+			            //"quit": {name: "Quit", icon: function($element, key, item){ return 'context-menu-icon context-menu-icon-quit'; }}
+			        }
+			    });
+			});
+            
+            var conversation_objects = {};
+			ChatChecker = "";
+
+            function initCheckMessages(){
+				$.ajax({
+                    type: "POST",
+                    url: "/chat",
+                    data: {
+                        csrfmiddlewaretoken: '{{ csrf_token }}',
+                        requestID : globalrequestid,
+                        LOAD : "LOAD"
+                    },
+                    dataType: "text",
+                    success: function (data) {
+                    	data = JSON.parse(data);
+                        console.log(data);
+                    	chatusers = [];
+                    	for (var i=0; i<data.length; ++i){
+                    		if(data[i].chatppl){
+                    			console.log(data[i].chatppl);
+                    			chatusers = data[i].chatppl;
+                    			$('.chat-tabs').empty();
+                    			$('.chat-content').empty();
+                    			for (var n=0; n<data[i].chatppl.length; ++n){
+                    				$('.chat-tabs').append(
+                    					$("<li class='cashtab'>").append(
+                    						$("<a data-toggle='tab' data-target='#"+data[i].chatppl[n]+"' aria-expanded='false'>").append(
+                    								data[i].chatppl[n])));
+                        			var str = ' \
+                            			<div class="tab-pane" id="'+data[i].chatppl[n]+'"> \
+                                        	<div class="row"> \
+                                        		<div class="col-md-12"> \
+                                        			<div style="height:480px;border: 1px solid black;overflow:scroll;" class="'+data[i].chatppl[n]+'-msgs msgs" ></div> \
+                                        		</div> \
+                                        	</div> \
+                                        	<div class="row"> \
+                                    			<div class="col-md-9"> \
+                                    				<textarea class="form-control" placeholder="Message" style="resize:none;" maxlength="2000"></textarea> \
+                                    			</div> \
+                                    			<div class="col-md-3"> \
+                                    				<button type="button" class="chat_send btn btn-lg pull-right" username="'+data[i].chatppl[n]+'" requestid="'+data[i].RequestID+'">Send</button> \
+                                    			</div> \
+                                        	</div> \
+                                    	</div>';
+									$('.chat-content').append($.parseHTML( str ));
+
+									$('.tab-pane:first-child').addClass('active');
+									$('.chat-tabs').children().children()[0].click();
+
+									$('.chat_send').click(function(){
+					                    var ref = $(this).parent().prev().children()[0];
+					                    var msg = ref.value;
+					                    var rowid = $('.chat_send').attr('requestid');
+										var tousername = $('.chat_send').attr('username');
+                                        var key = $('.chat_send').attr('key');
+
+                                        var msgobj = {
+                                            requestID : rowid,
+                                            toUser : tousername,
+                                            fromUser: username,
+                                            msg : msg,
+                                            key : key,
+                                        };
+                                        sock.send(JSON.stringify(msgobj));
+                                        ref.value = "";
+					                });
+                    			}
+                    		}
+                    		if (data[i].key) {
+                                $('.chat_send').attr('key', data[i].key);
+                    		}
+                    	}
+
+                       	for (var i=0; i<chatusers.length; ++i){
+                       		conversation = [];
+                       		for (var n=0; n<data.length; ++n){
+                       			if(data[n].message && (data[n].FromUser==chatusers[i] || data[n].ToUser==chatusers[i])) {
+                       				conversation.push(data[n]);
+                       			}
+                       		}
+                       		conversation.sort(function(a, b) {
+							    return a.date.localeCompare(b.date);
+							});
+                       		conversation_objects[chatusers[i]] = conversation;
+
+                       		for (var msgi=0; msgi<conversation.length; ++msgi){
+                       			if(conversation[msgi].FromUser==chatusers[i]) {
+                       				$('.'+chatusers[i]+'-msgs').append(
+                       				$("<div class='theirmsg pull-left'>").append(document.createTextNode(conversation[msgi].FromUser+" : "+conversation[msgi].message)));
+                       			}
+                       			else {
+                       				$('.'+chatusers[i]+'-msgs').append(
+                       				$("<div class='mymsg pull-right'>").append(document.createTextNode("You : "+conversation[msgi].message)));
+                       			}
+                       			$('.'+chatusers[i]+'-msgs').append("<br/>");
+
+                       		}
+
+                       	}
+
+                       	$('.msgs').animate({scrollTop: $('.msgs').get(0).scrollHeight}, 1000);
+
+                       	var ref = $(this).parent().prev().children()[0];
+                        var rowid = $('.chat_send').attr('requestid');
+                        var tousername = $('.chat_send').attr('username');
+                        var key = $('.chat_send').attr('key');
+
+                        var msgobj = {
+                            requestID : rowid,
+                            toUser : tousername,
+                            fromUser: username,
+                            msg : "adduser",
+                            key : key,
+                        };
+                        sock.send(JSON.stringify(msgobj));
+
+                       	console.log(conversation_objects);
+
+                    },
+                    error: function (data) {
+                        console.log('Error');
+                        console.log(data);
+                    }
+                });
+			}
+
+			function sockCheckMessages(){
+
+            }
+
+			var globalrequestid = "";
+
+			$('#chatForm').on('shown.bs.modal', function() {
+			    //start setTimeout
+			    var requestid = $('.chat_send').attr('requestid');
+			    console.log(requestid);
+			});
+
+			
+
+            $('#chatForm').on('hidden.bs.modal', function () {
+			  	//stop setTimeout
+			  	//clearInterval(ChatChecker);
+			  	//start a new slower one for message updates
+			});
+
+			$(function(){
+			    $.contextMenu({
+			        selector: '.your-requests-table > tbody > .context-menu-one', 
+			        trigger: 'left',
+			        callback: function(key, options) {
+			            var m = "clicked: " + key;
+                        switch (key) {
+                            case "delete":
+                                var thisrow = $(this);
+                                var rowid = parseInt($(this)[0].id);
+                                console.log(rowid);
+                                $.ajax({
+                                    type: "POST",
+                                    url: "/request",
+                                    data: {
+                                        csrfmiddlewaretoken: '{{ csrf_token }}',
+                                        requestID : rowid,
+                                        DELETE : "DELETE"
+                                    },
+                                    dataType: "text",
+                                    success: function (data) {
+                                        thisrow.empty();
+                                        successToast.push('Request successfully deleted.');
+                                    },
+                                    error: function (data) {
+                                        console.log('Error');
+                                        console.log(data);
+                                    }
+                                });
+                                break;
+
+                            case "messages":
+                                var thisrow = $(this);
+                                var rowid = parseInt($(this)[0].id);
+                                globalrequestid = rowid;
+                                initCheckMessages();
+
+                                $('#chatForm').modal('show');
+                                break;
+
+                            case "map":
+                                setUserPos = false;
+                                $(this).parents('section').find('.view-map').click();
+                                var pos = {
+                                    lat: parseFloat($(this).attr('lat')),
+                                    lng: parseFloat($(this).attr('lng'))
+                                };
+
+                                table_map.setCenter(pos);
+                                table_map.setZoom(15);
+                                var row_num = $(this).index();
+                                google.maps.event.trigger(table_map.markers[row_num], 'click');
+                                break;
+                        }
+			            console.log(m);
+			        },
+			        items: {
+			        	"messages": {name: "Messages", icon: "fa-envelope-o"},
+                        "map": {name: "View on Map", icon: "fa-map-marker"},
+			            //"edit": {name: "Edit", icon: "edit"}, //editable if owner's
+			            "delete": {name: "Delete Request", icon: "delete"}, //deletable if owner's
+			            "sep1": "---------",
+			            //"quit": {name: "Quit", icon: function($element, key, item){ return 'context-menu-icon context-menu-icon-quit'; }}
+			        }
+			    });
+			});
+
+            {% if isPayoutPartner %}
+            
+            $(function(){
+            	
+			    $.contextMenu({
+			        selector: '.deliveries-table > tbody > .context-menu-one', 
+			        trigger: 'left',
+			        callback: function(key, options) {
+			            var m = "clicked: " + key;
+                        switch (key) {
+                            case "messages":
+                                var thisrow = $(this);
+                                var rowid = parseInt($(this)[0].id);
+                                globalrequestid = rowid;
+                                initCheckMessages();
+                                $('#chatForm').modal('show');
+                                break;
+                            case "map":
+                                setUserPos = false;
+                                $(this).parents('section').find('.view-map').click();
+                                var pos = {
+                                    lat: parseFloat($(this).attr('lat')),
+                                    lng: parseFloat($(this).attr('lng'))
+                                };
+
+                                table_map.setCenter(pos);
+                                table_map.setZoom(15);
+                                var row_num = $(this).index();
+                                google.maps.event.trigger(table_map.markers[row_num], 'click');
+                                break;
+
+                            case "delivered":
+                                //popup confirming that the request was delivered
+                                var thisrow = $(this);
+                                var rowid = parseInt($(this)[0].id);
+                                globalrequestid = rowid;
+                                $('#delivery_Form').find('#requestID').val(globalrequestid);
+                                $('#deliveryForm').modal('show');
+                                break;
+
+                            default:
+                                console.log("Error. Option not in context menu list");
+                                break;
+                        }
+			            console.log(m);
+			        },
+			        items: {
+			        	"messages": {name: "Messages", icon: "fa-envelope-o"},
+                        "map": {name: "View on Map", icon: "fa-map-marker"},
+			            "sep1": "---------",
+                        "delivered": {name: "I have delivered this", icon: "fa-check-square-o"},
+			            //"quit": {name: "Quit", icon: function($element, key, item){ return 'context-menu-icon context-menu-icon-quit'; }}
+			        }
+			    });
+			});
+
+            {% endif %}
+
+            function getCookie(c_name)
+            {
+                if (document.cookie.length > 0)
+                {
+                    c_start = document.cookie.indexOf(c_name + "=");
+                    if (c_start != -1)
+                    {
+                        c_start = c_start + c_name.length + 1;
+                        c_end = document.cookie.indexOf(";", c_start);
+                        if (c_end == -1) c_end = document.cookie.length;
+                        return unescape(document.cookie.substring(c_start,c_end));
+                    }
+                }
+                return "";
+            }
+
+            $.ajaxSetup({
+                headers: { "X-CSRFToken": getCookie("csrftoken") }
+            });
+
+
+
+            //get request, load for yourrequests
+        </script>
+
+        <script>
+
+            $(document).on('click', 'div[name="currency"]', function(){
+                console.log('here');
+            });
+
+        	$('input[name="pickup_amount"]').on('change textInput input focusout', function(){
+        		if ($('.cashtab').hasClass('active')) {
+        			$.ajax({
+                        type: "POST",
+                        url: "/cashpayment-conversion/",
+                        dataType: "text",
+                        data: {
+                            csrfmiddlewaretoken: '{{ csrf_token }}',
+                            pickup_amount: $('input[name="pickup_amount"]').val(),
+                            pickup_currency: $('div[name="pickup_currency"]').val(),
+                            currency: $('div[name="currency"]').val()
+                        },
+                        success: function(data) {
+                            console.log('Ok');
+                            console.log(data);
+                            $('input[name="amount"]').val(data);
+                        },
+                        error: function(xhr, textStatus, errorThrown) {
+                            console.log('Error');
+                        }
+                    });
+        		}
+        	});
+
+        	$('input[name="amount"]').on('change textInput input focusout', function(){
+        		if ($('.cashtab').hasClass('active')) {
+        			$.ajax({
+                        type: "POST",
+                        url: "/cashpayment-conversion/",
+                        dataType: "text",
+                        data: {
+                            csrfmiddlewaretoken: '{{ csrf_token }}',
+                            amount: $('input[name="amount"]').val(),
+                            pickup_currency: $('div[name="pickup_currency"]').val(),
+                            currency: $('div[name="currency"]').val()
+                        },
+                        success: function(data) {
+                            console.log('Ok');
+                            console.log(data);
+                            $('input[name="pickup_amount"]').val(data);
+                        },
+                        error: function(xhr, textStatus, errorThrown) {
+                            console.log('Error');
+                        }
+                    });
+        		}
+        	});
+        	
+        </script>
+
+        <script>
+            $('#Country').change(function(){
+                country_code = $('#Country').val();
+                country_curr = $('.bfh-flag-'+country_code).parents('a').attr('data-option');
+                $('div[name="currency"]').val(country_curr);
+            });
+
+            $('#myCountry').change(function(){
+                country_code = $('#myCountry').val();
+                country_curr = $('.bfh-flag-'+country_code).parents('a').attr('data-option');
+                $('div[name="pickup_currency"]').val(country_curr);
+            });
+
+            (function( $ ) {
+                $.fn.haversine = function(lat1,lng1,lat2,lng2) {
+                    if (typeof(Number.prototype.toRad) === "undefined") {
+                        Number.prototype.toRad = function() {
+                            return this * Math.PI / 180;
+                        }
+                    }
+                    var dLat = (parseFloat(lat2)-parseFloat(lat1)).toRad();
+                    var dLon = (parseFloat(lng2)-parseFloat(lng1)).toRad();
+                    var lat1 = parseFloat(lat1).toRad();
+                    var lat2 = parseFloat(lat2).toRad();
+
+                    var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2);
+                    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+                    var d = 6371 * c; //6371 for km, 3959 for miles
+
+                    return d;
+                };
+            })( jQuery );
+
+
+            $.fn.populateNearest = function(table_name){
+                function initGeolocation(){
+                    if( navigator.geolocation ){
+                        navigator.geolocation.getCurrentPosition( geo_success, geo_fail );
+                    }
+                    else {
+                        alert("Your browser does not appear to support geolocation services.");
+                    }
+                }
+                function geo_success(position) {
+                    var userlat = position.coords.latitude;
+                    var userlng = position.coords.longitude;
+
+                    $(table_name).find('tr').each(function(i){
+                        if(i==0) {return true;}
+                        var reqlat = $(this).attr('lat');
+                        var reqlng = $(this).attr('lng');
+                        var distance = $().haversine(userlat,userlng, reqlat, reqlng).toFixed(3);
+                        if ($(this).children('.row-distance').length > 0)
+                            $(this).children('.row-distance')[0].innerText = distance;
+                    });
+
+                    var sorted_col = $(table_name).dataTable().fnSettings().aaSorting[0][0];
+                    var sorted_type = $(table_name).dataTable().fnSettings().aaSorting[0][1];
+
+                    $(table_name).dataTable().fnDestroy();
+                    $(table_name).dataTable( {
+                        "order": [[ sorted_col, sorted_type ]]
+                    });
+                }
+
+                function geo_fail() {
+                    // Could not obtain location
+                }
+                initGeolocation();
+            };
+
+
+            $('tbody').on("mouseenter", "tr", function() {
+                $(this).addClass('row-hover');
+            });
+
+            $('tbody').on("mouseleave", "tr", function() {
+                $(this).removeClass('row-hover');
+            });
+        </script>
+
+	</body>
+</html>
+{% endif %}

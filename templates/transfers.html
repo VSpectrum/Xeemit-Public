@@ -1,0 +1,19 @@
+{% load tz %}
+{% localtime on %}
+{% if userRequests.count > 0 %}
+    {% for request in userRequests %}
+        <tr class="context-menu-one {% if "Needs payment" in request.status %} needs-payment {% elif "Unpaid" in request.status  %} unpaid {% elif "Paid" in request.status %} paid {% endif %}"
+                id="{{ request.requestID }}"
+                amount="${{ request.amount|floatformat:2 }}"
+                lat = "{{ request.lat }}"
+                lng = "{{ request.lng }}"
+                >
+            <td data-order="{{ request.amount|floatformat:2 }}">${{ request.amount|floatformat:2 }}</td>
+            <td>{{request.street}}, {{request.area}}, {{request.country}}</td>
+            <td>{{ request.status }}</td>
+            <td><span style="display:none;">{{ request.dateCreated|date:"U" }}</span>{{ request.dateCreated }}</td>
+            <td class="row-distance">0</td>
+        </tr>
+    {% endfor %}
+{% endif %}
+{% endlocaltime %}

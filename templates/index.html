@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<link rel="icon" href="">
+		<title>Xeemit | Money Delivered to You </title>
+
+		<link href="{% static 'css/bootstrap.css'%}" rel="stylesheet">
+        <link href="{% static 'css/bootstrap-social.css'%}" rel="stylesheet">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
+		<link rel="stylesheet" type="text/css" href="{% static 'css/component.css'%}" />
+		<script src="{% static 'js/modernizr.custom.js'%}"></script>
+		<link href="{% static 'css/style.css'%}" rel="stylesheet">
+        <script src='https://www.google.com/recaptcha/api.js'></script>
+	</head>
+	<body id="page-top">
+
+		<div class="md-modal md-effect-1 register-modal" id="modal-1">
+			<div class="md-content">
+				<h3>Register</h3>
+				<div>
+					<form class="registration-form" id="registration-form">
+						<div class="col-sm-12">
+
+                            <div class="strike">
+                                <span>
+                                    Log In With Social Media
+                                </span>
+                            </div>
+
+                            <div class="row social-media-login" style="padding-left: 15px; padding-right: 15px;">
+                                <a class="btn-block btn-social btn-lg btn-google" href="{% url 'social:begin' 'google-oauth2' %}">
+                                    <i class="fa fa-google"></i>Sign in with Gmail
+                                </a>
+                            </div>
+
+                            <div class="row social-media-login" style="padding-left: 15px; padding-right: 15px;">
+                                <a class="btn-block btn-social btn-lg btn-facebook" href="{% url 'social:begin' 'facebook' %}">
+                                    <i class="fa fa-facebook"></i>Sign in with Facebook
+                                </a>
+                            </div>
+
+                            <div class="row" style="padding-left: 15px; padding-right: 15px;">
+                                <a class="btn-block btn-social btn-lg btn-twitter" href="{% url 'social:begin' 'twitter' %}?next={{ request.path }}">
+                                    <i class="fa fa-twitter"></i>Sign in with Twitter
+                                </a>
+                            </div>
+
+                            <div class="strike">
+                                <span>
+                                    Or Register
+                                </span>
+                            </div>
+
+							<div class="row">
+								<div class="col-sm-6 form-group">
+									<label>First Name</label>
+									<input name="first_name" type="text" placeholder="Enter First Name Here." class="form-control req">
+								</div>
+								<div class="col-sm-6 form-group">
+									<label>Last Name</label>
+									<input name="last_name" type="text" placeholder="Enter Last Name Here." class="form-control req">
+								</div>
+							</div>
+
+                            <div class="form-group">
+								<label>Username</label>
+								<input name="username" type="text" placeholder="Enter Username Here." class="form-control req">
+							</div>
+								
+							<div class="form-group">
+								<label>Email Address</label>
+								<input name="email" type="text" placeholder="Enter Email Address Here." class="form-control req">
+							</div>
+								
+							<div class="row">
+                                <div class="col-sm-6 form-group">
+                                    <label>Password<span style="padding-left: 10px;"></span><img class="pass-invalid" src="{% static 'images/invalid.png' %}" alt="invalid" height="15" width="15"></label>
+                                    <input name="password" type="password" placeholder="Enter Password Here" class="form-control req">
+                                </div>
+                                <div class="col-sm-6 form-group">
+                                    <label>Confirm Password<span style="padding-left: 10px;"></span><img class="pass-invalid" src="{% static 'images/invalid.png' %}" alt="invalid" height="15" width="15"></label>
+                                    <input name="confirmpassword" type="password" placeholder="Enter Password Here" class="form-control req">
+                                </div>
+							</div>
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="g-recaptcha" data-size="normal" data-sitekey="6Lc39iITAAAAAM50LppiWEpdmwHqsHgxk0o4-Lzq"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <button type="button" class="btn btn-lg btn-info pull-right register-btn">Register</button>
+                                    <button class="md-close btn btn-close pull-right close-register-btn">Close</button>
+                                </div>
+                            </div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
+        <div class="md-modal md-effect-1" id="modal-2">
+			<div class="md-content">
+				<h3>Log In</h3>
+				<div>
+					<form class="login-form" id="login-form">
+						<div class="col-sm-12">
+
+                            <div class="strike">
+                                <span>
+                                    With Social Media
+                                </span>
+                            </div>
+
+                            <div class="row social-media-login" style="padding-left: 15px; padding-right: 15px;">
+                                <a class="btn-block btn-social btn-lg btn-google" href="{% url 'social:begin' 'google-oauth2' %}">
+                                    <i class="fa fa-google"></i>Sign in with Gmail
+                                </a>
+                            </div>
+
+                            <div class="row social-media-login" style="padding-left: 15px; padding-right: 15px;">
+                                <a class="btn-block btn-social btn-lg btn-facebook" href="{% url 'social:begin' 'facebook' %}">
+                                    <i class="fa fa-facebook"></i>Sign in with Facebook
+                                </a>
+                            </div>
+
+                            <div class="row" style="padding-left: 15px; padding-right: 15px;">
+                                <a class="btn-block btn-social btn-lg btn-twitter" href="{% url 'social:begin' 'twitter' %}?next={{ request.path }}">
+                                    <i class="fa fa-twitter"></i>Sign in with Twitter
+                                </a>
+                            </div>
+
+                            <div class="strike">
+                                <span>
+                                    With Registered Account
+                                </span>
+                            </div>
+
+							<div class="form-group">
+								<label>Username</label>
+								<input name="username" type="text" placeholder="Enter Username Here" class="form-control">
+							</div>
+
+							<div class="row">
+                                <div class="col-sm-12 form-group">
+                                    <label>Password</label>
+                                    <input name="password" type="password" placeholder="Enter Password Here" class="form-control">
+                                </div>
+							</div>
+                            {% csrf_token %}
+                            <div class="row">
+                                <button type="button" class="btn btn-lg btn-info pull-right login-btn">Login</button>
+                                <button class="md-close btn btn-close pull-right close-login-btn">Close</button>
+                            </div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<!-- Navigation -->
+		<div id="wrapper">
+			<nav class="navbar navbar-default">
+				<div class="container">
+
+
+
+					<!-- Brand and toggle get grouped for better mobile display -->
+					<div class="navbar-header page-scroll">
+						<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						</button>
+						<a class="navbar-brand page-scroll" href="/"><img src="{% static 'images/Xeemit.png'%}" alt="Xeemit logo"></a>
+					</div>
+					<!-- Collect the nav links, forms, and other content for toggling -->
+					<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+						<ul class="nav navbar-nav navbar-right">
+							<li class="hidden">
+								<a href="#page-top"></a>
+							</li>
+							<li>
+								<a class="page-scroll" href="#about">About</a>
+							</li>
+							<li>
+								<a class="page-scroll" href="#contact">Active Cities</a>
+							</li>
+
+                            {% if user.is_authenticated %}
+                            <li class="myAccount-btn" style="opacity:0;">
+                                <a href="#myaccount">My Account</a>
+
+							</li>
+                            {% endif %}
+
+	                        <li>
+                                {% if user.is_authenticated %}
+                                <a href="/logout">Sign Out</a>
+                                {% else %}
+                                <a class="md-trigger" data-modal="modal-2" href="#signin">Sign In</a>
+                                {% endif %}
+							</li>
+						</ul>
+	                    <ul class="nav navbar-nav">
+							<li>
+								<a class="md-trigger" data-modal="modal-1" href="#send">Send Money</a>
+							</li>
+							<li>
+								<a class="md-trigger" data-modal="modal-1" href="#deliver">Deliver Money</a>
+							</li>
+						</ul>
+					</div>
+					<!-- /.navbar-collapse -->
+				</div>
+				<!-- /.container-fluid -->
+			</nav>
+			
+			<section id="home">
+				<div class="container">
+	                <div class="row">
+	                    <div class="col-lg-12 text-center">
+	                        <div class="section-title home-header">
+	                            <h2>No more waiting in banks</h2>
+	                            <p>Have your money delivered directly to who you want <strong>anonymously</strong></p>
+	                        </div>
+	                    </div>
+	                </div>
+	                <div class="row row-0-gutter">
+	                    <!-- start portfolio item -->
+	                    <div class="col-md-6 col-0-gutter">
+	                        <div class="ot-portfolio-item">
+	                            <figure class="effect-bubba">
+	                                <img src="{% static 'images/demo/portfolio-1.jpg'%}" alt="img02" class="img-responsive" />
+	                                <figcaption>
+	                                    <h2>Sign up and Send Money</h2>
+	                                    <p>
+	                                        After signing up, you can choose how you want to send money. Transactions can be made using online payment methods such as <strong>Credit Card</strong>/<strong>PayPal</strong> or in-person payment with <strong>Cash</strong>.
+	                                    In-person transactions are handled with <strong>registered Payout Partners</strong> who will come to you.
+	                                    </p>
+	                                    
+	                                    <a href="#" data-toggle="modal" data-target="#Modal-1">View more</a>
+	                                </figcaption>
+	                            </figure>
+	                        </div>
+	                    </div>
+	                    <!-- end portfolio item -->
+	                    <!-- start portfolio item -->
+	                    <div class="col-md-6 col-0-gutter">
+	                        <div class="ot-portfolio-item">
+	                            <figure class="effect-bubba">
+	                                <img src="{% static 'images/demo/portfolio-2.jpg'%}" alt="img02" class="img-responsive" />
+	                                <figcaption>
+	                                    <h2>Become a Payout Partner</h2>
+	                                    <p>Earn back your money plus interest by becoming a Payout Partner!
+	                                    If someone wants to send money to a person in your area, you can <strong>choose</strong> to deliver that amount using your funds.
+	                                    Within two weeks, <strong>you get back your money plus 5% on each transaction made</strong>.
+	                                    </p>
+	                                    <a href="#" data-toggle="modal" data-target="#Modal-2">View more</a>
+	                                </figcaption>
+	                            </figure>
+	                        </div>
+	                    </div>
+	                    <!-- end portfolio item -->
+	                </div>
+				</div><!-- container -->
+			</section>
+
+			<section id="about" class="mz-module">
+				<div class="container light-bg">
+					<div class="row">
+						<div class="col-lg-12 text-center">
+							<div class="section-title">
+								<h2>ABOUT</h2>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6 text-center">
+							<div class="mz-about-container">
+								<p>A creative agency based on Candy Land, ready to boost your business with some beautifull templates. Lattes Agency is one of the best in town see more you will be amazed.</p>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<!-- skill bar item -->
+							<div class="skillbar-item">
+								<div class="skillbar" data-percent="90%">
+									<h3>Web design</h3>
+									<div class="skillbar-bar">
+										<div class="skillbar-percent" style="width: 90%;">
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- skill bar item -->
+							<div class="skillbar-item">
+								<div class="skillbar" data-percent="80%">
+									<h3>Development</h3>
+									<div class="skillbar-bar">
+										<div class="skillbar-percent" style="width: 80%;">
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- skill bar item -->
+							<div class="skillbar-item">
+								<div class="skillbar" data-percent="85%">
+									<h3>Photography</h3>
+									<div class="skillbar-bar">
+										<div class="skillbar-percent" style="width: 85%;">
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- skill bar item -->
+							<div class="skillbar-item">
+								<div class="skillbar" data-percent="70%">
+									<h3>Marketing</h3>
+									<div class="skillbar-bar">
+										<div class="skillbar-percent" style="width: 70%;">
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row row-0-gutter">
+						<!-- about module -->
+						<div class="col-md-3 col-0-gutter mz-about-default text-center">
+							<div class="mz-module-about">
+								<i class="fa fa-briefcase ot-circle"></i>
+								<h3>Web Development</h3>
+							</div>
+						</div>
+						<!-- end about module -->
+						<!-- about module -->
+						<div class="col-md-3 col-0-gutter mz-about-dark text-center">
+							<div class="mz-module-about">
+								<i class="fa fa-photo ot-circle"></i>
+								<h3>Visualisation</h3>
+							</div>
+						</div>
+						<!-- end about module -->
+						<!-- about module -->
+						<div class="col-md-3 col-0-gutter mz-about-default text-center">
+							<div class="mz-module-about">
+								<i class="fa fa-camera-retro ot-circle"></i>
+								<h3>Photography</h3>
+							</div>
+						</div>
+						<!-- end about module -->
+						<!-- about module -->
+						<div class="col-md-3 col-0-gutter mz-about-dark text-center">
+							<div class="mz-module-about">
+								<i class="fa fa-cube ot-circle"></i>
+								<h3>UI/UX Design</h3>
+							</div>
+						</div>
+						<!-- end about module -->
+					</div>
+				</div>
+				<!-- /.container -->
+			</section>
+
+			<p id="back-top">
+				<a href="#top"><i class="fa fa-angle-up"></i></a>
+			</p>
+
+            <div class="push"></div>
+		</div>
+
+		<!-- Modal for portfolio item 1 -->
+		<div class="modal fade" id="Modal-1" tabindex="-1" role="dialog" aria-labelledby="Modal-label-1">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title" id="Modal-label-1">Sending Money</h4>
+					</div>
+					<div class="modal-body">
+						<img src="{% static 'images/demo/portfolio-1.jpg'%}" alt="img01" class="img-responsive" />
+						<p>Video showing the process of sending money</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-close" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Modal for portfolio item 2 -->
+		<div class="modal fade" id="Modal-2" tabindex="-1" role="dialog" aria-labelledby="Modal-label-2">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title" id="Modal-label-2">Becoming a Payout Partner</h4>
+					</div>
+					<div class="modal-body">
+						<img src="{% static 'images/demo/portfolio-2.jpg'%}" alt="img01" class="img-responsive" />
+						<p>Video showing the workflow of the payment partner</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-close" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="md-overlay"></div><!-- the overlay element -->
+
+
+		<!-- Bootstrap core JavaScript
+			================================================== -->
+		<!-- Placed at the end of the document so the pages load faster -->
+		<script src="{% static 'js/jquery-2.2.4.min.js'%}"></script>
+		<script src="{% static 'js/bootstrap.min.js'%}"></script>
+{#		<script src="{% static 'js/SmoothScroll.js'%}"></script>#}
+{#		<script src="{% static 'js/theme-scripts.js'%}"></script> #}
+		<script src="{% static 'js/classie.js'%}"></script>
+		<script src="{% static 'js/modalEffects.js'%}"></script>
+        <script src="{% static 'js/main.js'%}"></script>
+	</body>
+</html>

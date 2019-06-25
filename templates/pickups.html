@@ -1,0 +1,20 @@
+{% load tz %}
+{% localtime on %}
+{% if userRequests.count > 0 %}
+    {% for pickup in userRequests %}
+        <tr class="context-menu-one {% if "Needs payment" in pickup.status %} needs-payment {% elif "Unpaid" in pickup.status  %} unpaid {% elif "Paid" in pickup.status %} paid {% endif %}"
+                id="{{ pickup.requestID }}"
+                amount="${{ pickup.amount|floatformat:2 }} {{ pickup.currency }}"
+                lat = "{{ pickup.lat }}"
+                lng = "{{ pickup.lng }}"
+                >
+            <td data-order="{{ pickup.amount|floatformat:2 }}">${{ pickup.amount|floatformat:2 }} {{ pickup.currency }}</td>
+            <td>{{pickup.street}}, {{pickup.area}}, {{pickup.country}}</td>
+            <td>{{ pickup.status }}</td>
+            <td>{{ pickup.phone }}</td>
+            <td><span style="display:none;">{{ pickup.dateCreated|date:"U" }}</span>{{ pickup.dateCreated }}</td>
+            <td class="row-distance">0</td>
+        </tr>
+    {% endfor %}
+{% endif %}
+{% endlocaltime %}
